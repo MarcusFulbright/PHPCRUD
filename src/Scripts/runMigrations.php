@@ -6,10 +6,10 @@
     $config->addConnection(
         'mysql',
         [
-            'dbname'   => 'PHP_CRUD',
-            'user'     => 'root',
-            'password' => 'losercounty',
-            'host'     => 'localhost',
+            'dbname'   => getenv('DB_NAME'),
+            'user'     => getenv('DB_USER'),
+            'password' => getenv('DB_PASSWORD'),
+            'host'     => getenv('DB_HOST'),
             'driver'   => 'pdo_mysql'
         ]
     );

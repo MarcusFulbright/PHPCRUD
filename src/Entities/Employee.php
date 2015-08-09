@@ -1,12 +1,18 @@
 <?php
     namespace Mbright\Entities;
 
+    use Mbright\Traits\FromArray;
+    use Mbright\Traits\ToArray;
     use Spot\Entity;
     use Spot\EntityInterface;
     use Spot\MapperInterface;
 
     class Employee extends Entity
     {
+        use ToArray;
+
+        use FromArray;
+
         protected static $table ='employees';
 
         public static function fields()
