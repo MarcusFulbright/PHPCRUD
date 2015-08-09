@@ -1,0 +1,28 @@
+{
+    "name": "mbright/PHP-CRUD",
+    "description": "A Basic PHP CRUD application",
+    "authors": [
+        {
+            "name": "Marcus Fulbright"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mbright\\": "src/"
+        }
+    },
+    "require-dev": {
+        "aura/router": "~2.0",
+        "vlucas/spot2": "~2.0",
+        "aura/filter": "2.0.0-beta1"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Aura\\Router\\": "tests/",
+            "Aura\\Di\\": "vendor/aura/di/tests"
+        }
+    }
+}
