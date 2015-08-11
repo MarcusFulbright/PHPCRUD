@@ -11,7 +11,8 @@
       "aura/router": "~2.0",
       "vlucas/spot2": "~2.0",
       "vlucas/phpdotenv": "~2.0",
-      "aura/filter": "2.0.0-beta1"
+      "aura/filter": "2.0.0-beta1",
+      "aura/view": "~2.1.0"
     },
     "autoload": {
         "psr-4": {
