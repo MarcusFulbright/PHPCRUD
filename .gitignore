@@ -2,3 +2,5 @@
 .idea/
 *.iml
 .env
+.gitignore
+composer.lock

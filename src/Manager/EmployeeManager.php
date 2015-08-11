@@ -4,6 +4,7 @@
     use Aura\Filter\FilterFactory;
     use Aura\Filter\SubjectFilter;
     use Mbright\Entities\Employee;
+    use Mbright\Exception\ValidationException;
     use Spot\Locator;
 
     class EmployeeManager
@@ -43,21 +44,22 @@
             return $filter;
         }
 
-        public function get($primary_key = null)
+        public function get($id = null)
         {
             $mapper = $this->mapper_locator->mapper($this->entity_name);
-            if ($primary_key === null) {
-                return $mapper->all();
+            if ($id === null) {
+                $output = $mapper->all()->with('location');
             } else {
-                return $mapper->get($primary_key);
+                $output = $mapper->where(['id' => $id])->with('location');
             }
+            return $output;
         }
 
         public function create(array $data)
         {
             $filter = $this->getFilter();
             if (! $filter->__invoke($data) ) {
-                return $filter->getFailures();
+                throw new ValidationException($filter->getFailures());
             }
             $employee =  new Employee();
             $employee->fromArray($data);
@@ -70,7 +72,7 @@
         {
             $filter = $this->getFilter();
             if (! $filter->__invoke($data)) {
-                return $filter->getFailures();
+                throw new ValidationException($filter->getFailures());
             }
             $updated = $employee->fromArray($data);
             $mapper = $this->mapper_locator->mapper($this->entity_name);
