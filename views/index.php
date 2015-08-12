@@ -5,7 +5,7 @@
     <title></title>
 </head>
 <body>
-<a class="create" href="<?php $this->router->generate('employee_form')?>">Create Employee</a>
+<a class="create" href="/employee">Create Employee</a>
 <h1>Employees</h1>
     <?php
     foreach ($this->employees as $employee) {
@@ -15,13 +15,16 @@
                 <li><?php echo $employee->getFirstName().' '.$employee->getLastName() ?></li>
                 <li><?php echo $employee->getPhone()?></li>
                 <li><?php echo $employee->getEmail()?></li>
-                <li><a class="edit" href="<?php $this->router->generate('employee_form', ['id' => $employee->getId()])?>">Edit</a> </li>
-                <li><a class="delete" href="<?php $this->router->generate('delete', ['id' => $employee->getId()])?>">Delete</a></li>
+                <li><a class="edit" href="/employee/<?php echo $employee->getId() ?>">Edit</a> </li>
+                <li>
+                    <form action="/employee/<?php echo $employee->getId() ?>/delete" method="POST">
+                        <input type="submit" value="submit">
+                    </form>
+                </li>
             </ul>
         </div>
         <?php
     }
     ?>
-</ul>
 </body>
 </html>

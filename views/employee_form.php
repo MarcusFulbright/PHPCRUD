@@ -1,5 +1,6 @@
 <?php
 $edit = isset($this->data) ? true : false;
+$submit_url = $edit === true ? '/employee/'.$this->data['id'] : '/employee';
 ?>
 
 <!DOCTYPE html>
@@ -9,7 +10,7 @@ $edit = isset($this->data) ? true : false;
     <title></title>
 </head>
 <body>
-<form action="<?php echo $this->submit_url ?>" method="<?php echo $this->submit_method ?>">
+<form action="<?php echo $submit_url ?>" method="POST">
     First Name: <input type="text" name="firstName" value="<?php if ($edit) {echo $this->data['firstName'];}?>"> <br>
     Last Name: <input type="text" name="lastName" value="<?php if($edit) {echo $this->data['lastName'];} ?>"> <br>
     Phone Number: <input type="text" name="phone" placeholder="555-555-5555" value="<?php if($edit) { echo $this->data['phone'];}?>">

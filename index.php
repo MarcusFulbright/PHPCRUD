@@ -92,7 +92,7 @@ $router->addPost('create', '/employee')
             return $view->__invoke();
         }
     ]);
-$router->addPut('update', '/employee/{id}')
+$router->addPost('update', '/employee/{id}')
     ->addTokens([
         'id' => '\d+'
     ])
@@ -119,7 +119,7 @@ $router->addPut('update', '/employee/{id}')
         }
     ]);
 
-$route->addDelete('delete', 'employee/{id}')
+$route->addPost('delete', 'employee/{id}/delete')
     ->addTokens([
         'id' => '\d+'
     ])
