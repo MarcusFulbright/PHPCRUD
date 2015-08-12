@@ -20,7 +20,7 @@ class EmployeeManager extends AbstractManager
 
     protected function getEntityName()
     {
-        return 'Mbright/Entities/Employee';
+        return 'Mbright\Entities\Employee';
     }
 
     public function getFilter()
@@ -46,8 +46,8 @@ class EmployeeManager extends AbstractManager
     public function create(array $data)
     {
         $filter = $this->getFilter();
-        if (! $filter->__invoke($data) ) {
-            throw new ValidationException($filter->getFailures());
+        if (! $filter->__invoke($data)) {
+            throw new ValidationException($filter->getFailures()->getMessagesAsString());
         }
         $employee =  new Employee();
         $employee->fromArray($data);
