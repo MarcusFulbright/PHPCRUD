@@ -1,17 +1,17 @@
 <?php
-    namespace Mbright\Entities;
+namespace Mbright\Entities;
 
-    use Spot\Entity;
+use Spot\Entity;
 
-    class Location extends Entity
+class Location extends Entity
+{
+    protected static $table ='locations';
+
+    public static function fields()
     {
-        protected static $table ='locations';
-
-        public static function fields()
-        {
-            return [
-                'id'    => ['type' => 'integer', 'primary' => true, 'autoincrement' => true],
-                'name'  => ['type' => 'string', 'length' => 50]
-            ];
-        }
+        return [
+            'id'    => ['type' => 'integer', 'primary' => true, 'autoincrement' => true],
+            'name'  => ['type' => 'string', 'length' => 50]
+        ];
     }
+}

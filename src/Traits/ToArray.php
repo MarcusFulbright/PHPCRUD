@@ -1,20 +1,20 @@
 <?php
-    namespace Mbright\Traits;
+namespace Mbright\Traits;
 
-    trait ToArray
+trait ToArray
+{
+    public function toArray()
     {
-        public function toArray()
-        {
-            $refl = new \ReflectionObject($this);
-            $properties = $refl->getProperties();
-            $output = [];
-            foreach ($properties as $property) {
-                if ($property->isStatic() === true) {
-                    continue;
-                }
-                $property->setAccessible(true);
-                $output[$property->getName()] = $property->getValue($this);
+        $refl = new \ReflectionObject($this);
+        $properties = $refl->getProperties();
+        $output = [];
+        foreach ($properties as $property) {
+            if ($property->isStatic() === true) {
+                continue;
             }
-            return $output;
+            $property->setAccessible(true);
+            $output[$property->getName()] = $property->getValue($this);
         }
+        return $output;
     }
+}
