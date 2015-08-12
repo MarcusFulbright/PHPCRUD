@@ -4,30 +4,28 @@ require 'vendor/autoload.php';
 
 use Aura\Router\RouterFactory;
 
-$router_factory = new RouterFactory();
-$router = $router_factory->newInstance();
-
-$view_factory = new \Aura\View\ViewFactory;
-$view = $view_factory->newInstance();
-$view_registry = $view->getViewRegistry();
-$view_registry->set('index', 'views/index.php');
-$view_registry->set('employee_form', 'views/create.php');
-
 $config = new \Spot\Config();
 $config->addConnection(
     'mysql',
     [
-        'dbname'   => getenv('DB_NAME'),
-        'user'     => getenv('DB_USER'),
+        'dbname' => getenv('DB_NAME'),
+        'user' => getenv('DB_USER'),
         'password' => getenv('DB_PASSWORD'),
-        'host'     => getenv('DB_HOST'),
-        'driver'   => 'pdo_mysql'
+        'host' => getenv('DB_HOST'),
+        'driver' => 'pdo_mysql'
     ]
 );
-
 $locator = new \Spot\Locator($config);
 
 $di = [
+    'view' => function() {
+        $view_factory = new \Aura\View\ViewFactory;
+        $view = $view_factory->newInstance();
+        $view_registry = $view->getViewRegistry();
+        $view_registry->set('index', 'views/index.php');
+        $view_registry->set('employee_form', 'views/create.php');
+        return $view;
+    },
     'managers' => [
         'employee' => function() use ($locator) {
             return new \Mbright\Manager\EmployeeManager(new \Aura\Filter\FilterFactory(), $locator);
@@ -37,11 +35,13 @@ $di = [
         }
     ],
 ];
-
+$router_factory = new RouterFactory();
+$router = $router_factory->newInstance();
 $router->add('index','')
     ->addValues([
         'format'=> '.html',
-        'action'=> function() use ($view, $di) {
+        'action'=> function() use ($di) {
+            $view = $di['view']->__invoke();
             $manager = $di['managers']['employee']->__invoke();
             $view->setView('index');
             $view->setData([
@@ -53,7 +53,8 @@ $router->add('index','')
 $router->addGet('employee_form', '/employee{/id}')
     ->addValues([
         'format' => '.html',
-        'action' => function($params) use ($view, $di) {
+        'action' => function($params) use ($di) {
+            $view = $di['view']->__invoke();
             $manager = $di['managers']['location']->__invoke();
             $view->setView('employee_form');
             $view->setData([
@@ -72,7 +73,8 @@ $router->addGet('employee_form', '/employee{/id}')
 $router->addPost('create', '/employee')
     ->addValues([
         'format' => '.html',
-        'action' => function() use ($view, $di) {
+        'action' => function() use ($di) {
+            $view = $di['view']->__invoke();
             $manager = $di['managers']['employee']->__invoke();
             try {
                 $manager->create($_POST['employee']);
@@ -96,7 +98,8 @@ $router->addPut('update', '/employee/{id}')
     ])
     ->addValues([
         'format' => '.html',
-        'action' => function ($params) use ($view, $di) {
+        'action' => function ($params) use ($di) {
+            $view = $di['view']->__invoke();
             $manager = $di['managers']['employee']->__invoke();
             $employee = $manager->get($params['id']);
             try {
@@ -122,7 +125,8 @@ $route->addDelete('delete', 'employee/{id}')
     ])
     ->addValues([
         'format' => '.html',
-        'action' => function ($params) use ($view, $di) {
+        'action' => function ($params) use ($di) {
+            $view = $di['view']->__invoke();
             $manager = $di['managers']['employee']->__invoke();
             $employee = $manager->get($params['id']);
             $result = $manager->delete($employee);
