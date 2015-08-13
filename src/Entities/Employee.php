@@ -33,7 +33,7 @@ class Employee extends Entity
             'id'        => ['type' => 'integer', 'primary' => true, 'autoincrement' => true],
             'firstName' => ['type' => 'string', 'required' => true, 'length' => 50],
             'lastName'  => ['type' => 'text', 'required' => true, 'length' => 50],
-            'phone'     => ['type' => 'integer', 'default' => 0, 'index' => true, 'length' => 25],
+            'phone'     => ['type' => 'string', 'default' => 0, 'index' => true, 'length' => 25],
             'email'     => ['type' => 'string', 'required' => true],
             'location'  => ['type' => 'integer', 'required' => true]
         ];
@@ -42,7 +42,7 @@ class Employee extends Entity
     public static function relations (MapperInterface $mapper, EntityInterface $entity)
     {
         return [
-            $mapper->belongsTo($entity, 'Mbright\Entities\Location', 'location')
+            'location' => $mapper->belongsTo($entity, 'Mbright\Entities\Location', 'location')
         ];
     }
 

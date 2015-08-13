@@ -3,15 +3,26 @@ namespace Mbright\Manager;
 
 use Spot\Locator;
 
-class LocationManager extends AbstractManager
+class LocationManager
 {
     public function __construct(Locator $locator)
     {
-        $this->locator = $locator;
+        $this->mapper_locator = $locator;
     }
 
     public function getEntityName()
     {
         return 'Mbright\Entities\Location';
+    }
+
+    public function get($id = null)
+    {
+        $mapper = $this->mapper_locator->mapper($this->getEntityName());
+        if ($id === null) {
+            $output = $mapper->all();
+        } else {
+            $output = $mapper->where(['id' => $id]);
+        }
+        return $output;
     }
 }

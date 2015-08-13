@@ -7,7 +7,7 @@ use Mbright\Entities\Employee;
 use Mbright\Exception\ValidationException;
 use Spot\Locator;
 
-class EmployeeManager extends AbstractManager
+class EmployeeManager
 {
     /** @var FilterFactory */
     protected $filter_factory;
@@ -23,22 +23,32 @@ class EmployeeManager extends AbstractManager
         return 'Mbright\Entities\Employee';
     }
 
+    public function get($id = null)
+    {
+        $mapper = $this->mapper_locator->mapper($this->getEntityName());
+        if ($id === null) {
+            $output = $mapper->all()->with('location');
+        } else {
+            $output = $mapper->where(['id' => $id])->with('location');
+        }
+        return $output;
+    }
+
     public function getFilter()
     {
         /** @var SubjectFilter $filter */
         $filter = $this->filter_factory->newSubjectFilter();
-        $filter->sanitize('id')->to('int');
         $filter->sanitize('firstName')->to('string');
         $filter->sanitize('lastName')->to('string');
         $filter->sanitize('email')->to('string');
-        $filter->sanitize('location')->to('int');
+        //$filter->sanitize('location')->to('int');
 
-        $filter->validate('id')->is('int');
+        //$filter->validate('id')->is('int');
         $filter->validate('firstName')->is('max', 50);
         $filter->validate('lastName')->is('max', 50);
-        $filter->validate('phone')->is('regex', "/\\d{3}-\\d{3}=\\d{4}/");
+        $filter->validate('phone')->is('regex', "/\\d{3}-\\d{3}-\\d{4}/");
         $filter->validate('email')->is('email');
-        $filter->validate('location')->is('int');
+        //$filter->validate('location')->is('int');
 
         return $filter;
     }

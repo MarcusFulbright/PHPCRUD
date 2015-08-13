@@ -4,6 +4,9 @@ require 'vendor/autoload.php';
 
 use Aura\Router\RouterFactory;
 
+$dotenv = new Dotenv\Dotenv(__DIR__);
+$dotenv->load();
+
 $config = new \Spot\Config();
 $config->addConnection(
     'mysql',
@@ -23,7 +26,7 @@ $di = [
         $view = $view_factory->newInstance();
         $view_registry = $view->getViewRegistry();
         $view_registry->set('index', 'views/index.php');
-        $view_registry->set('employee_form', 'views/create.php');
+        $view_registry->set('employee_form', 'views/employee_form.php');
         return $view;
     },
     'managers' => [
@@ -37,7 +40,7 @@ $di = [
 ];
 $router_factory = new RouterFactory();
 $router = $router_factory->newInstance();
-$router->add('index','')
+$router->add('index','/')
     ->addValues([
         'format'=> '.html',
         'action'=> function() use ($di) {
@@ -77,7 +80,7 @@ $router->addPost('create', '/employee')
             $view = $di['view']->__invoke();
             $manager = $di['managers']['employee']->__invoke();
             try {
-                $manager->create($_POST['employee']);
+                $manager->create($_POST);
                 $view->setView('index');
                 $view->setData([
                     'employees' => $manager->get(),
@@ -86,7 +89,8 @@ $router->addPost('create', '/employee')
                 $view->setView('employee_form');
                 $view->setData([
                     'errors' => $e->getMessage(),
-                    'data' => $_POST['employee']
+                    'locations' => $di['managers']['location']->__invoke()->get(),
+                    'data' => $_POST
                 ]);
             }
             return $view->__invoke();
@@ -119,7 +123,7 @@ $router->addPost('update', '/employee/{id}')
         }
     ]);
 
-$route->addPost('delete', 'employee/{id}/delete')
+$router->addPost('delete', 'employee/{id}/delete')
     ->addTokens([
         'id' => '\d+'
     ])
@@ -143,9 +147,7 @@ $route->addPost('delete', 'employee/{id}/delete')
         }
     ]);
 
-$path = parse_url($_REQUEST['REQUEST_URI'], PHP_URL_PATH);
+$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $route = $router->match($path, $_SERVER);
 $action = $route->params['action'];
-
-echo $action->__invoke();
-?>
+echo $action->__invoke($route->params);
