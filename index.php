@@ -77,23 +77,21 @@ $router->addPost('create', '/employee')
     ->addValues([
         'format' => '.html',
         'action' => function() use ($di) {
-            $view = $di['view']->__invoke();
             $manager = $di['managers']['employee']->__invoke();
             try {
                 $manager->create($_POST);
-                $view->setView('index');
-                $view->setData([
-                    'employees' => $manager->get(),
-                ]);
+                header('location: http://localhost:8000');
+                exit();
             } catch (\Mbright\Exception\ValidationException $e) {
+                $view = $di['view']->__invoke();
                 $view->setView('employee_form');
                 $view->setData([
                     'errors' => $e->getMessage(),
                     'locations' => $di['managers']['location']->__invoke()->get(),
                     'data' => $_POST
                 ]);
+                return $view->__invoke();
             }
-            return $view->__invoke();
         }
     ]);
 $router->addPost('update', '/employee/{id}')
@@ -103,47 +101,36 @@ $router->addPost('update', '/employee/{id}')
     ->addValues([
         'format' => '.html',
         'action' => function ($params) use ($di) {
-            $view = $di['view']->__invoke();
             $manager = $di['managers']['employee']->__invoke();
             $employee = $manager->get($params['id']);
             try {
-                $manager->update($_POST['employee'], $employee);
-                $view->setView('index');
-                $view->setData([
-                    'employees' => $manager->get(),
-                ]);
+                $manager->update($_POST, $employee);
+                header('location: http://localhost:8000');
+                exit();
             } catch (\Mbright\Exception\ValidationException $e) {
+                $view = $di['view']->__invoke();
                 $view->setView('employee_form');
                 $view->setData([
                     'errors' => $e->getMessage(),
-                    'data' => $_POST['employee']
+                    'data' => $_POST
                 ]);
+                return $view->__invoke();
             }
-            return $view->__invoke();
         }
     ]);
 
-$router->addPost('delete', 'employee/{id}/delete')
+$router->addPost('delete', '/employee/{id}/delete')
     ->addTokens([
         'id' => '\d+'
     ])
     ->addValues([
         'format' => '.html',
         'action' => function ($params) use ($di) {
-            $view = $di['view']->__invoke();
             $manager = $di['managers']['employee']->__invoke();
-            $employee = $manager->get($params['id']);
-            $result = $manager->delete($employee);
-            $view->setView('index');
-            $view->setData([
-                'employees' => $manager->get(),
-            ]);
-            if ($result === false) {
-                $view->addData([
-                    'errors' => 'Failed To Delete Employee ID: ' .$params['id']
-                ]);
-            }
-            return $view->__invoke();
+            $employee = $manager->get((int)$params['id']);
+            $manager->delete($employee);
+            header('location: http://localhost:8000');
+            exit();
         }
     ]);
 
