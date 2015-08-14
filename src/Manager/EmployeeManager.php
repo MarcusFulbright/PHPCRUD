@@ -77,7 +77,6 @@ class EmployeeManager
         } catch (FilterFailed $e) {
             throw new ValidationException($e->getMessage());
         }
-
         $mapper = $this->mapper_locator->mapper($this->getEntityName());
         $values = array_merge($employee->data(), $data);
 

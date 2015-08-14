@@ -112,7 +112,8 @@ $router->addPost('update', '/employee/{id}')
                 $view->setView('employee_form');
                 $view->setData([
                     'errors' => $e->getMessage(),
-                    'data' => $_POST
+                    'data' => $_POST,
+                    'locations' => $di['managers']['locations']->__invoke()->get()
                 ]);
                 return $view->__invoke();
             }
